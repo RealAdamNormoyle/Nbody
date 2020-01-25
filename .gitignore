@@ -10,3 +10,4 @@ Temp/
 obj/
 *.unitypackage
 .vscode/*
+/Build
