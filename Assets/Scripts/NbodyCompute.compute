@@ -1,0 +1,36 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel ComputeForces
+
+
+RWStructuredBuffer<float3> positions: register(u1);
+RWStructuredBuffer<float3> accelerations: register(u2);
+RWStructuredBuffer<float3> velocitys: register(u3);
+RWStructuredBuffer<float> masses: register(u4);
+RWStructuredBuffer<int> actives: register(u5);
+
+uint maxBodies;
+float deltaTime;
+static float G = 6.67300;
+const float Softening=3;
+#define Softening2  Softening * Softening
+
+[numthreads(256,1,1)]
+void ComputeForces (uint3 id : SV_DispatchThreadID)
+{
+
+	[loop]
+	for (uint i = 0; i < maxBodies; i++)
+	{
+		if(i == id.x)
+			continue;
+
+		float3 d =  (positions[i] - positions[id.x]);
+		float r = length(d);
+		float force = ((G * (masses[id.x]) * (masses[i])) / (r * r + Softening));				
+		accelerations[id.x] -= d * force;
+	}
+
+	velocitys[id.x] += (accelerations[id.x] * deltaTime);
+	positions[id.x] -= ((velocitys[id.x]) * deltaTime);
+		
+};
