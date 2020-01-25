@@ -1,0 +1,12 @@
+.DS_STORE
+.vs
+Thumbs.db
+Library
+Temp/
+*.userprefs
+*.sln
+*.csproj
+*.sublime-workspace
+obj/
+*.unitypackage
+.vscode/*
